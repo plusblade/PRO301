@@ -1,0 +1,11 @@
+shopping cart
+login/sign in button for customer/seller
+Internationalization 
+anouncement
+Search bar(product, seller and categories)
+navigation bar with multiples option and categories
+hot deal products with image and their hyperlink 
+recommend products with image and their  hyperlink
+Some information about page
+Support center
+
