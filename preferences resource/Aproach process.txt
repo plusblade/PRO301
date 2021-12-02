@@ -1,0 +1,8 @@
+Sau khi đã xác định được thị trường cũng như sản phẩm của quy trình bán hàng trực tuyến , công việc tiếp theo của bạn là thiết kế một trang web. Nhớ là phải thiết kế cho trang web thật đơn giản vì bạn chỉ có thời gian không quá 5 giây để thu hút sự chú ý của khách hàng, nếu lâu hơn họ sẽ rời bỏ website và không bao giờ quay trở lại (quy trình bán hàng).
+-Chọn một hay hai font chữ dễ nhìn trên nền trắng.
+-Công cụ điều hướng phải thật rõ ràng, đơn giản và đồng bộ tất cả các trang.
+-Chỉ sử dụng hình ảnh, âm thanh hay video nếu muốn làm thông điệp của bạn thuyết phục hơn
+-Bổ sung chức năng hỏi người dùng có muốn nhận thông tin qua thư không (opt-in) để có thể thu thập thêm địa chỉ email của khách hàng.
+-Đơn giản hoá quy trình mua bán hàng online và khoảng cách giữa lựa chọn thoát ra cũng như tiếp tục mua hàng không nhiều hơn hai cú click chuột.
+-Trang web là bộ mặt của doanh nghiệp, do vậy hãy thiết kế website sao cho thân thiện nhất với người dùng.
+-Thiết kế một website và học cách quản lý bán hàng online cho mình (quy trình bán hàng)
