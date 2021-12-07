@@ -5,15 +5,19 @@
  */
 package controller.report;
 
+import dal.AttendanceDBContext;
 import dal.StudentDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.HashMap;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.Attendance;
+import model.ClassTime;
 import model.Student;
 
 /**
@@ -22,7 +26,9 @@ import model.Student;
  */
 public class AttendanceCheckingController extends HttpServlet {
 
-    StudentDBContext sdb=new StudentDBContext();
+    StudentDBContext sdb = new StudentDBContext();
+    AttendanceDBContext adb = new AttendanceDBContext();
+
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -35,14 +41,16 @@ public class AttendanceCheckingController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int classID=Integer.parseInt(request.getParameter("classID"));
-        Date studyDate=Date.valueOf(request.getParameter("date"));
-        int slotID=Integer.parseInt(request.getParameter("slot"));
-        ArrayList<Student> students=(ArrayList<Student>)sdb.getAllStudentsByClass(classID);
+        int classID = Integer.parseInt(request.getParameter("classID"));
+        Date studyDate = Date.valueOf(request.getParameter("date"));
+        int slotID = Integer.parseInt(request.getParameter("slot"));
+        ArrayList<Student> students = (ArrayList<Student>) sdb.getAllStudentsByClass(classID);
+        ArrayList<Attendance> ats = (ArrayList<Attendance>) adb.getAllAttendanceRecordByClassDate(studyDate, slotID, classID);
         request.setAttribute("students", students);
         request.setAttribute("date", studyDate);
         request.setAttribute("slotID", slotID);
-        request.getRequestDispatcher("../view/students/viewCLass.jsp").forward(request, response);
+        request.setAttribute("attendances", ats);
+        request.getRequestDispatcher("../view/students/viewClass.jsp").forward(request, response);
     }
 
     /**
@@ -56,6 +64,32 @@ public class AttendanceCheckingController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        boolean isExisted = Boolean.valueOf(request.getParameter("exists"));
+        String[] ids = request.getParameterValues("id");
+        if (!isExisted) {          
+            ArrayList<Attendance> atts = new ArrayList<>();
+            for (String id : ids) {
+                Attendance at = new Attendance();
+                Student s = new Student();
+                s.setId(id);
+                at.setStudent(s);
+                at.setDate(Date.valueOf(request.getParameter("date")));
+                at.setSlotID(Integer.parseInt(request.getParameter("slotID")));
+                at.setPresent(request.getParameter("present" + id) != null);
+                atts.add(at);
+            }
+            adb.insert(atts);
+        }else{
+            ArrayList<Attendance> atts = new ArrayList<>();
+            for (String id : ids) {
+                Attendance at = new Attendance();
+                Student s = new Student();
+                at.setId(Integer.parseInt(id));
+                at.setPresent(request.getParameter("present" + id) != null);
+                atts.add(at);
+            }
+            adb.update(atts);
+        }
     }
 
     /**

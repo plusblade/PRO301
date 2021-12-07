@@ -14,7 +14,9 @@ import java.sql.Date;
 public class Attendance {
     private int id;
     private Date date;
-    private boolean absence;
+    private boolean present;
+    private Student student;
+    private int slotID;
 
     public Attendance() {
     }
@@ -35,12 +37,32 @@ public class Attendance {
         this.date = date;
     }
 
-    public boolean isAbsence() {
-        return absence;
+    public boolean isPresent() {
+        return present;
     }
 
-    public void setAbsence(boolean absence) {
-        this.absence = absence;
+    public void setPresent(boolean present) {
+        this.present = present;
     }
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
+    }
+
+    public int getSlotID() {
+        return slotID;
+    }
+
+    public void setSlotID(int slotID) {
+        this.slotID = slotID;
+    }
+
+    
+    
+    
     
 }
