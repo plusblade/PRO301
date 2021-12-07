@@ -11,31 +11,31 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import model.ClassGroup;
+import model.ClassTime;
 
 /**
  *
  * @author pluso
  */
-public class ClassDBContext extends DBContext{
-    public ArrayList<ClassGroup> getAllClass()
+public class ClassTimeDBContext extends DBContext{
+    public ArrayList<ClassTime> getAllTime()
     {
-        ArrayList<ClassGroup> cgs = new ArrayList<>();
+        ArrayList<ClassTime> cts = new ArrayList<>();
         try {
-            String sql = "select classID,className from Class";
+            String sql = "select slotID,startTime from SlotTime";
             PreparedStatement stm = connection.prepareStatement(sql);
             ResultSet rs = stm.executeQuery();
             while(rs.next())
             {
-                ClassGroup cg = new ClassGroup();
-                cg.setId(rs.getInt("classID"));
-                cg.setName(rs.getString("className"));
-                cgs.add(cg);
+                ClassTime ct=new ClassTime();
+                ct.setTime(rs.getTime("startTime"));
+                ct.setSlotID(rs.getInt("slotID"));
+                cts.add(ct);
             }
-            return cgs;
+            
         } catch (SQLException ex) {
-            Logger.getLogger(ClassDBContext.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ClassTimeDBContext.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return null;
+        return cts;
     }
 }

@@ -19,12 +19,13 @@ import model.Student;
  * @author pluso
  */
 public class StudentDBContext extends DBContext{
-    public ArrayList<Student> getAllStudentsByClass()
-    {
-        ArrayList<Student> students = new ArrayList<>();
+    public ArrayList<Student> getAllStudentsByClass(int classID)
+    {    
         try {
-            String sql = "select c.classID,c.className,s.studentID,s.studentName from Student s inner join Class c on s.classID=c.classID";
+            ArrayList<Student> students = new ArrayList<>();
+            String sql = "select c.classID,c.className,s.studentID,s.studentName from Student s inner join Class c on s.classID=c.classID where c.classID=?";
             PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setInt(1, classID);
             ResultSet rs = stm.executeQuery();
             while(rs.next())
             {
@@ -43,4 +44,6 @@ public class StudentDBContext extends DBContext{
         }
         return null;
     }
+    
+    
 }

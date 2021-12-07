@@ -1,6 +1,6 @@
 <%-- 
-    Document   : class
-    Created on : Dec 3, 2021, 6:30:38 PM
+    Document   : viewClass
+    Created on : Dec 7, 2021, 10:35:49 AM
     Author     : pluso
 --%>
 
@@ -9,9 +9,10 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <
         <title>JSP Page</title>
     </head>
     <body>
-        <h1>Hello World!</h1>
+        <h1>Total number of students: </h1>
     </body>
 </html>
