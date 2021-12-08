@@ -22,7 +22,7 @@ import model.Student;
  */
 public class AttendanceDBContext extends DBContext {
 
-    public ArrayList<Attendance> getAllAttendanceRecordByClassDate(Date date,int slotID, int classID) {
+    public ArrayList<Attendance> getAllAttendanceRecordByClassDate(Date date, int slotID, int classID) {
         ArrayList<Attendance> ats = new ArrayList<>();
         try {
             String sql = "select a.attendanceID,a.present,s.studentID,s.studentName from Attendance a inner join Student s on a.studentID=s.studentID\n"
@@ -33,14 +33,14 @@ public class AttendanceDBContext extends DBContext {
             stm.setInt(3, slotID);
             ResultSet rs = stm.executeQuery();
             while (rs.next()) {
-               Attendance at=new Attendance();
-               at.setId(rs.getInt("attendanceID"));
-               Student s=new Student();
-               s.setId(rs.getString("studentID"));
-               s.setName(rs.getString("studentName"));
-               at.setStudent(s);
-               at.setPresent(rs.getBoolean("present"));
-               ats.add(at);
+                Attendance at = new Attendance();
+                at.setId(rs.getInt("attendanceID"));
+                Student s = new Student();
+                s.setId(rs.getString("studentID"));
+                s.setName(rs.getString("studentName"));
+                at.setStudent(s);
+                at.setPresent(rs.getBoolean("present"));
+                ats.add(at);
             }
             return ats;
         } catch (SQLException ex) {
@@ -48,7 +48,31 @@ public class AttendanceDBContext extends DBContext {
         }
         return null;
     }
-    
+
+    public ArrayList<Attendance> getAllAttendanceRecordByUsername(String username) {
+        ArrayList<Attendance> ats = new ArrayList<>();
+        try {
+            String sql = "select a.attendanceID,a.present,a.date,a.slotID from Attendance a inner join Student s on a.studentID=s.studentID inner join Account acc on s.username=acc.username \n"
+                    + "where acc.username=?\n"
+                    + "order by a.date, a.slotID";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setString(1, username);
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                Attendance at = new Attendance();
+                at.setDate(rs.getDate("date"));
+                at.setSlotID(rs.getInt("slotID"));
+                at.setId(rs.getInt("attendanceID"));
+                at.setPresent(rs.getBoolean("present"));
+                ats.add(at);
+            }
+            return ats;
+        } catch (SQLException ex) {
+            Logger.getLogger(ClassDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
     public void insert(ArrayList<Attendance> atts) {
         try {
             connection.setAutoCommit(false);
@@ -66,7 +90,7 @@ public class AttendanceDBContext extends DBContext {
                 PreparedStatement stm = connection.prepareStatement(sql);
                 stm.setString(1, att.getStudent().getId());
                 stm.setDate(2, att.getDate());
-                stm.setInt(3,att.getSlotID());
+                stm.setInt(3, att.getSlotID());
                 stm.setBoolean(4, att.isPresent());
                 stm.executeUpdate();
             }
@@ -78,9 +102,7 @@ public class AttendanceDBContext extends DBContext {
             } catch (SQLException ex1) {
                 Logger.getLogger(AttendanceDBContext.class.getName()).log(Level.SEVERE, null, ex1);
             }
-        }
-        finally
-        {
+        } finally {
             try {
                 connection.setAutoCommit(true);
             } catch (SQLException ex) {
@@ -89,16 +111,16 @@ public class AttendanceDBContext extends DBContext {
         }
 
     }
-    
+
     public void update(ArrayList<Attendance> atts) {
         try {
             connection.setAutoCommit(false);
-            String sql = "UPDATE [Attendance]\n" +
-                        "   SET [present] = ?\n" +
-                        " WHERE [attendanceID] = ?";
+            String sql = "UPDATE [Attendance]\n"
+                    + "   SET [present] = ?\n"
+                    + " WHERE [attendanceID] = ?";
             for (Attendance att : atts) {
                 PreparedStatement stm = connection.prepareStatement(sql);
-                stm.setInt(2,att.getId());
+                stm.setInt(2, att.getId());
                 stm.setBoolean(1, att.isPresent());
                 stm.executeUpdate();
             }
@@ -110,9 +132,7 @@ public class AttendanceDBContext extends DBContext {
             } catch (SQLException ex1) {
                 Logger.getLogger(AttendanceDBContext.class.getName()).log(Level.SEVERE, null, ex1);
             }
-        }
-        finally
-        {
+        } finally {
             try {
                 connection.setAutoCommit(true);
             } catch (SQLException ex) {

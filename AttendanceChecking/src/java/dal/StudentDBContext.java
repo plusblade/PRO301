@@ -23,7 +23,8 @@ public class StudentDBContext extends DBContext{
     {    
         try {
             ArrayList<Student> students = new ArrayList<>();
-            String sql = "select c.classID,c.className,s.studentID,s.studentName from Student s inner join Class c on s.classID=c.classID where c.classID=?";
+            String sql = "select c.classID,c.className,s.studentID,s.studentName from Student s inner join Class c on s.classID=c.classID where c.classID=?\n"
+                    +"order by s.studentID";
             PreparedStatement stm = connection.prepareStatement(sql);
             stm.setInt(1, classID);
             ResultSet rs = stm.executeQuery();

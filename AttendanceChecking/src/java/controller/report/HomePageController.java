@@ -5,6 +5,7 @@
  */
 package controller.report;
 
+import dal.AttendanceDBContext;
 import dal.ClassDBContext;
 import dal.ClassTimeDBContext;
 import dal.StudentDBContext;
@@ -18,6 +19,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.Account;
+import model.Attendance;
 import model.ClassGroup;
 import model.ClassTime;
 import model.Student;
@@ -28,9 +31,10 @@ import model.Student;
  */
 public class HomePageController extends HttpServlet {
 
-    ClassDBContext cdb=new ClassDBContext();
-    ClassTimeDBContext ctdb=new ClassTimeDBContext();
-    StudentDBContext sdb=new StudentDBContext();
+    ClassDBContext cdb = new ClassDBContext();
+    ClassTimeDBContext ctdb = new ClassTimeDBContext();
+    StudentDBContext sdb = new StudentDBContext();
+    AttendanceDBContext adb = new AttendanceDBContext();
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -44,11 +48,24 @@ public class HomePageController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        List<ClassGroup> classes=cdb.getAllClass();
-        List<ClassTime> times=ctdb.getAllTime();
-        request.setAttribute("classes", classes);
-        request.setAttribute("times", times);
-        request.getRequestDispatcher("view/home/homepage.jsp").forward(request, response);
+        Account account = (Account) request.getSession().getAttribute("account");
+        if (account != null) {
+            if (account.getRole() == 0) {
+                List<ClassGroup> classes = cdb.getAllClass();
+                List<ClassTime> times = ctdb.getAllTime();
+                request.setAttribute("classes", classes);
+                request.setAttribute("times", times);
+                request.getRequestDispatcher("view/home/homepage.jsp").forward(request, response);
+            } else {
+                String studentID = account.getUsername();
+                ArrayList<Attendance> ats = adb.getAllAttendanceRecordByUsername(studentID);
+                request.setAttribute("attendances", ats);
+                request.getRequestDispatcher("view/students/viewAttendance.jsp").forward(request, response);
+            }
+        } else {
+            response.getWriter().println("Access denied");
+            response.sendRedirect("login");
+        }
     }
 
     /**
@@ -62,10 +79,10 @@ public class HomePageController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int classID=Integer.parseInt(request.getParameter("class"));
-        Date studyDate=Date.valueOf(request.getParameter("date"));
-        int slotID=Integer.parseInt(request.getParameter("slotID"));
-        response.sendRedirect("checking/attendance?classID="+classID+"&date="+studyDate+"&slot="+slotID);
+        int classID = Integer.parseInt(request.getParameter("class"));
+        Date studyDate = Date.valueOf(request.getParameter("date"));
+        int slotID = Integer.parseInt(request.getParameter("slotID"));
+        response.sendRedirect("checking/attendance?classID=" + classID + "&date=" + studyDate + "&slot=" + slotID);
     }
 
     /**

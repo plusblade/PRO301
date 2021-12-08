@@ -16,6 +16,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.Account;
 import model.Attendance;
 import model.ClassTime;
 import model.Student;
@@ -41,16 +42,26 @@ public class AttendanceCheckingController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int classID = Integer.parseInt(request.getParameter("classID"));
-        Date studyDate = Date.valueOf(request.getParameter("date"));
-        int slotID = Integer.parseInt(request.getParameter("slot"));
-        ArrayList<Student> students = (ArrayList<Student>) sdb.getAllStudentsByClass(classID);
-        ArrayList<Attendance> ats = (ArrayList<Attendance>) adb.getAllAttendanceRecordByClassDate(studyDate, slotID, classID);
-        request.setAttribute("students", students);
-        request.setAttribute("date", studyDate);
-        request.setAttribute("slotID", slotID);
-        request.setAttribute("attendances", ats);
-        request.getRequestDispatcher("../view/students/viewClass.jsp").forward(request, response);
+        Account account = (Account) request.getSession().getAttribute("account");
+        if(account!=null){
+        if (account.getRole()==0) {
+            int classID = Integer.parseInt(request.getParameter("classID"));
+            Date studyDate = Date.valueOf(request.getParameter("date"));
+            int slotID = Integer.parseInt(request.getParameter("slot"));
+            ArrayList<Student> students = (ArrayList<Student>) sdb.getAllStudentsByClass(classID);
+            ArrayList<Attendance> ats = (ArrayList<Attendance>) adb.getAllAttendanceRecordByClassDate(studyDate, slotID, classID);
+            request.setAttribute("students", students);
+            request.setAttribute("date", studyDate);
+            request.setAttribute("slotID", slotID);
+            request.setAttribute("attendances", ats);
+            request.getRequestDispatcher("../view/students/viewClass.jsp").forward(request, response);
+        }else{
+            response.getWriter().println("Access denied");
+        }
+        }else{
+            response.getWriter().println("Access denied");
+            response.sendRedirect("../login");
+        }
     }
 
     /**
@@ -65,8 +76,9 @@ public class AttendanceCheckingController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         boolean isExisted = Boolean.valueOf(request.getParameter("exists"));
+        System.out.println(isExisted);
         String[] ids = request.getParameterValues("id");
-        if (!isExisted) {          
+        if (!isExisted) {
             ArrayList<Attendance> atts = new ArrayList<>();
             for (String id : ids) {
                 Attendance at = new Attendance();
@@ -79,7 +91,7 @@ public class AttendanceCheckingController extends HttpServlet {
                 atts.add(at);
             }
             adb.insert(atts);
-        }else{
+        } else {
             ArrayList<Attendance> atts = new ArrayList<>();
             for (String id : ids) {
                 Attendance at = new Attendance();
@@ -90,6 +102,8 @@ public class AttendanceCheckingController extends HttpServlet {
             }
             adb.update(atts);
         }
+        response.getWriter().println("Successfully");
+        response.sendRedirect("../homepage");
     }
 
     /**
