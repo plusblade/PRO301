@@ -11,32 +11,35 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import model.ClassGroup;
+import model.Category;
 
 /**
  *
  * @author pluso
  */
-public class ClassDBContext extends DBContext{
-    public ArrayList<ClassGroup> getAllClassByLecturerID(String lecturerID)
-    {
-        ArrayList<ClassGroup> cgs = new ArrayList<>();
+public class CategoryDBContext extends DBContext{
+    
+    public ArrayList<Category> getAllCategory(){
+        
         try {
-            String sql = "select classID,className from Class where lecturerID=?";
+            ArrayList<Category> categories=new ArrayList<>();
+            String sql = "Select name,cid from Category";
             PreparedStatement stm = connection.prepareStatement(sql);
-            stm.setString(1, lecturerID);
             ResultSet rs = stm.executeQuery();
             while(rs.next())
             {
-                ClassGroup cg = new ClassGroup();
-                cg.setId(rs.getInt("classID"));
-                cg.setName(rs.getString("className"));
-                cgs.add(cg);
+                Category c=new Category();
+                c.setCid(rs.getInt("cid"));
+                c.setName(rs.getString("name"));
+                categories.add(c);
             }
-            return cgs;
+            return categories;
         } catch (SQLException ex) {
-            Logger.getLogger(ClassDBContext.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CategoryDBContext.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
+        
+    
+    
 }

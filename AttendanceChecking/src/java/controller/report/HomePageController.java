@@ -51,7 +51,7 @@ public class HomePageController extends HttpServlet {
         Account account = (Account) request.getSession().getAttribute("account");
         if (account != null) {
             if (account.getRole() == 0) {
-                List<ClassGroup> classes = cdb.getAllClass();
+                List<ClassGroup> classes = cdb.getAllClassByLecturerID(account.getUsername());
                 List<ClassTime> times = ctdb.getAllTime();
                 request.setAttribute("classes", classes);
                 request.setAttribute("times", times);
