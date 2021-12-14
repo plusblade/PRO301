@@ -41,6 +41,9 @@
                 </c:forEach>
                 </tbody>
             </table>
+            <form class="form-inline my-2 my-md-0" action="logout" style="margin-left: 1250px">                 
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Logout</button>
+            </form>
         </div>
     </body>
 </html>

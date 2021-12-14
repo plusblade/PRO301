@@ -5,6 +5,7 @@
  */
 package controller.report;
 
+import controller.authentication.BaseAuthenticationController;
 import dal.AttendanceDBContext;
 import dal.ClassDBContext;
 import dal.ClassTimeDBContext;
@@ -29,7 +30,7 @@ import model.Student;
  *
  * @author pluso
  */
-public class HomePageController extends HttpServlet {
+public class HomePageController extends BaseAuthenticationController {
 
     ClassDBContext cdb = new ClassDBContext();
     ClassTimeDBContext ctdb = new ClassTimeDBContext();
@@ -46,25 +47,20 @@ public class HomePageController extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void processGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         Account account = (Account) request.getSession().getAttribute("account");
-        if (account != null) {
-            if (account.getRole() == 0) {
-                List<ClassGroup> classes = cdb.getAllClassByLecturerID(account.getUsername());
-                List<ClassTime> times = ctdb.getAllTime();
-                request.setAttribute("classes", classes);
-                request.setAttribute("times", times);
-                request.getRequestDispatcher("view/home/homepage.jsp").forward(request, response);
-            } else {
-                String studentID = account.getUsername();
-                ArrayList<Attendance> ats = adb.getAllAttendanceRecordByUsername(studentID);
-                request.setAttribute("attendances", ats);
-                request.getRequestDispatcher("view/students/viewAttendance.jsp").forward(request, response);
-            }
+        if (account.getRole() == 0) {
+            List<ClassGroup> classes = cdb.getAllClassByLecturerID(account.getUsername());
+            List<ClassTime> times = ctdb.getAllTime();
+            request.setAttribute("classes", classes);
+            request.setAttribute("times", times);
+            request.getRequestDispatcher("view/home/homepage.jsp").forward(request, response);
         } else {
-            response.getWriter().println("Access denied");
-            response.sendRedirect("login");
+            String studentID = account.getUsername();
+            ArrayList<Attendance> ats = adb.getAllAttendanceRecordByUsername(studentID);
+            request.setAttribute("attendances", ats);
+            request.getRequestDispatcher("view/students/viewAttendance.jsp").forward(request, response);
         }
     }
 
@@ -77,7 +73,7 @@ public class HomePageController extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void processPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         int classID = Integer.parseInt(request.getParameter("class"));
         Date studyDate = Date.valueOf(request.getParameter("date"));

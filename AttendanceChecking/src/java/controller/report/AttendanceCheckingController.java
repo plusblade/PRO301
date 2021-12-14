@@ -5,6 +5,7 @@
  */
 package controller.report;
 
+import controller.authentication.BaseAuthenticationController;
 import dal.AttendanceDBContext;
 import dal.StudentDBContext;
 import java.io.IOException;
@@ -25,7 +26,7 @@ import model.Student;
  *
  * @author pluso
  */
-public class AttendanceCheckingController extends HttpServlet {
+public class AttendanceCheckingController extends BaseAuthenticationController {
 
     StudentDBContext sdb = new StudentDBContext();
     AttendanceDBContext adb = new AttendanceDBContext();
@@ -40,10 +41,9 @@ public class AttendanceCheckingController extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void processGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         Account account = (Account) request.getSession().getAttribute("account");
-        if(account!=null){
         if (account.getRole()==0) {
             int classID = Integer.parseInt(request.getParameter("classID"));
             Date studyDate = Date.valueOf(request.getParameter("date"));
@@ -58,10 +58,6 @@ public class AttendanceCheckingController extends HttpServlet {
         }else{
             response.getWriter().println("Access denied");
         }
-        }else{
-            response.getWriter().println("Access denied");
-            response.sendRedirect("../login");
-        }
     }
 
     /**
@@ -73,7 +69,7 @@ public class AttendanceCheckingController extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void processPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         boolean isExisted = Boolean.valueOf(request.getParameter("exists"));
         System.out.println(isExisted);

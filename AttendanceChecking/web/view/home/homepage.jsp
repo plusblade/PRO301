@@ -56,32 +56,34 @@
                 </form>
             </div>
         </nav>
-        <h1>Attendance Checking</h1>
-        <div class=" col-6 col-md-4 col-md-offset-4  align-self-center">
-            <div class="form-group">
-                <form action="homepage" method="Post">
-                    <div class="form-group">
-                        Choose class: 
-                        <select name="class" class="form-select">
-                            <% for (ClassGroup cg : cgs) {%>
-                            <option value=<%=cg.getId()%>><%=cg.getName()%></option>
-                            <%}%>
-                        </select>
-                    </div>
-                    <div class="form-group" >
-                        Date:
-                        <input type="date" name="date" class="input-group date" required /><br/>
-                    </div>
-                    <div class="form-group">
-                        Time: 
-                        <select name="slotID" class="form-select" >
-                            <% for (ClassTime ct : cts) {%>
-                            <option value=<%=ct.getSlotID()%>>Slot <%=ct.getSlotID()%>-<%=ct.getTime()%></option>
-                            <%}%>
-                        </select>
-                    </div>
-                    <input type="submit" value="Check">
-                </form>
+        <div style="margin-top: 150px;margin-left:650px">
+            <h1>Attendance Checking</h1>
+            <div class=" col-6 col-md-4 col-md-offset-4  align-self-center">
+                <div class="form-group">
+                    <form action="homepage" method="Post">
+                        <div class="form-group">
+                            Choose class: 
+                            <select name="class" class="form-select">
+                                <% for (ClassGroup cg : cgs) {%>
+                                <option value=<%=cg.getId()%>><%=cg.getName()%></option>
+                                <%}%>
+                            </select>
+                        </div>
+                        <div class="form-group" >
+                            Date:
+                            <input type="date" name="date" class="input-group date" required /><br/>
+                        </div>
+                        <div class="form-group">
+                            Time: 
+                            <select name="slotID" class="form-select" >
+                                <% for (ClassTime ct : cts) {%>
+                                <option value=<%=ct.getSlotID()%>>Slot <%=ct.getSlotID()%>-<%=ct.getTime()%></option>
+                                <%}%>
+                            </select>
+                        </div>
+                        <input type="submit" value="Check">
+                    </form>
+                </div>
             </div>
         </div>
     </body>
